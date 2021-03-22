@@ -1,0 +1,36 @@
+{
+  "name": "dav-client",
+  "version": "0.0.1",
+  "description": "A DAV client to connect to DAV servers",
+  "main": "dist/index.js",
+  "module": "dist/index.js",
+  "type": "module",
+  "scripts": {
+    "build": "rollup -c rollup.config.ts",
+    "test": "jest"
+  },
+  "devDependencies": {
+    "@rollup/plugin-commonjs": "^17.1.0",
+    "@rollup/plugin-node-resolve": "^11.2.0",
+    "@rollup/plugin-typescript": "^8.2.0",
+    "@tsconfig/recommended": "^1.0.1",
+    "@types/jest": "^26.0.21",
+    "@types/url-join": "^4.0.0",
+    "@typescript-eslint/eslint-plugin": "^4.18.0",
+    "@typescript-eslint/parser": "^4.18.0",
+    "eslint": "^7.22.0",
+    "jest": "^26.6.3",
+    "rollup": "^2.42.0",
+    "rollup-plugin-terser": "^7.0.2",
+    "rollup-plugin-typescript2": "^0.30.0",
+    "ts-jest": "^26.5.4",
+    "tslib": "^2.1.0",
+    "typescript": "^4.2.3"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "isomorphic-unfetch": "^3.1.0",
+    "url-join": "^4.0.1"
+  }
+}
