@@ -5,7 +5,7 @@ import { RequestOptions } from '../lib/HTTPClient';
 jest.mock('isomorphic-unfetch', () => jest.fn());
 
 describe('The HTTPFetchClient class', () => {
-  const fetchMockReturnValue: Partial<Response> = {};
+  const fetchMockReturnValue: Partial<Response> = { ok: true };
 
   beforeEach(() => {
     fetchMockReturnValue.json = () => Promise.resolve({});
@@ -47,6 +47,24 @@ describe('The HTTPFetchClient class', () => {
 
       expect(fetch).toHaveBeenCalledTimes(1);
       expect(fetch).toHaveBeenCalledWith(requestOptions.url, { method: requestOptions.method, headers: requestOptions.headers, body: requestOptions.body });
+    });
+
+    it('should send a fetch request with the corrent params and throw an error when the response status is not ok', async (done) => {
+      (fetch as jest.Mock).mockReturnValue(Promise.resolve({ ok: false, status: 500, statusText: 'Internal Server Error' }));
+
+      const httpFetchClient = new HTTPFetchClient();
+      const requestOptions: RequestOptions = { url: 'http://url.com', method: 'POST', headers: { Authorization: 'Bearer whatever' }, body: '{"a":1}' };
+
+      try {
+        await httpFetchClient.request(requestOptions);
+
+        done(new Error('should not resolve'));
+      } catch (err) {
+        expect(err.message).toBe('500 Internal Server Error');
+        expect(fetch).toHaveBeenCalledTimes(1);
+        expect(fetch).toHaveBeenCalledWith(requestOptions.url, { method: requestOptions.method, headers: requestOptions.headers, body: requestOptions.body });
+        done();
+      }
     });
   });
 
@@ -91,6 +109,24 @@ describe('The HTTPFetchClient class', () => {
       expect(fetch).toHaveBeenCalledWith(requestOptions.url, { method: requestOptions.method, headers: requestOptions.headers, body: requestOptions.body });
       expect(result).toBe(jsonBodyContent);
     });
+
+    it('should send a fetch request with the corrent params and throw an error when the response status is not ok', async (done) => {
+      (fetch as jest.Mock).mockReturnValue(Promise.resolve({ ok: false, status: 500, statusText: 'Internal Server Error' }));
+
+      const httpFetchClient = new HTTPFetchClient();
+      const requestOptions: RequestOptions = { url: 'http://url.com', method: 'POST', headers: { Authorization: 'Bearer whatever' }, body: '{"a":1}' };
+
+      try {
+        await httpFetchClient.requestJson(requestOptions);
+
+        done(new Error('should not resolve'));
+      } catch (err) {
+        expect(err.message).toBe('500 Internal Server Error');
+        expect(fetch).toHaveBeenCalledTimes(1);
+        expect(fetch).toHaveBeenCalledWith(requestOptions.url, { method: requestOptions.method, headers: requestOptions.headers, body: requestOptions.body });
+        done();
+      }
+    });
   });
 
   describe('The requestText method', () => {
@@ -133,6 +169,24 @@ describe('The HTTPFetchClient class', () => {
       expect(fetch).toHaveBeenCalledTimes(1);
       expect(fetch).toHaveBeenCalledWith(requestOptions.url, { method: requestOptions.method, headers: requestOptions.headers, body: requestOptions.body });
       expect(result).toBe(textBodyContent);
+    });
+
+    it('should send a fetch request with the corrent params and throw an error when the response status is not ok', async (done) => {
+      (fetch as jest.Mock).mockReturnValue(Promise.resolve({ ok: false, status: 500, statusText: 'Internal Server Error' }));
+
+      const httpFetchClient = new HTTPFetchClient();
+      const requestOptions: RequestOptions = { url: 'http://url.com', method: 'POST', headers: { Authorization: 'Bearer whatever' }, body: '{"a":1}' };
+
+      try {
+        await httpFetchClient.requestText(requestOptions);
+
+        done(new Error('should not resolve'));
+      } catch (err) {
+        expect(err.message).toBe('500 Internal Server Error');
+        expect(fetch).toHaveBeenCalledTimes(1);
+        expect(fetch).toHaveBeenCalledWith(requestOptions.url, { method: requestOptions.method, headers: requestOptions.headers, body: requestOptions.body });
+        done();
+      }
     });
   });
 });

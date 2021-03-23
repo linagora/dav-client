@@ -19,10 +19,14 @@ export class HTTPFetchClient implements HTTPClient {
     return fetchOptions;
   }
 
-  public request(options: RequestOptions): Promise<Response> {
+  public async request(options: RequestOptions): Promise<Response> {
     const fetchOptions = this.buildFetchOptions(options);
 
-    return fetch(options.url, fetchOptions);
+    const response = await fetch(options.url, fetchOptions);
+
+    if (response.ok) return response;
+
+    throw new Error(`${response.status} ${response.statusText}`);
   }
 
   public async requestJson<T>(options: RequestOptions): Promise<T> {
