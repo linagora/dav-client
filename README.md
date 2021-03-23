@@ -15,7 +15,11 @@ const davClient = new DAVClient({ baseURL: 'http://0.0.0.0:8001', httpClient, he
 
 getInbox(davClient)('5f60334e78d1b021351f9f6e')
   .then(inbox => {
-    console.log('inbox =', inbox);
+    console.log('Request succeeded');
+    console.log(inbox);
+  })
+  .catch(error => {
+    console.error('Request failed', error);
   });
 ```
 
