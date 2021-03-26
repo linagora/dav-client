@@ -49,7 +49,7 @@ describe('The HTTPFetchClient class', () => {
       expect(fetch).toHaveBeenCalledWith(requestOptions.url, { method: requestOptions.method, headers: requestOptions.headers, body: requestOptions.body });
     });
 
-    it('should send a fetch request with the corrent params and throw an error when the response status is not ok', async (done) => {
+    it('should send a fetch request with the correct params and throw an error when the response status is not ok', async (done) => {
       (fetch as jest.Mock).mockReturnValue(Promise.resolve({ ok: false, status: 500, statusText: 'Internal Server Error' }));
 
       const httpFetchClient = new HTTPFetchClient();
@@ -110,7 +110,7 @@ describe('The HTTPFetchClient class', () => {
       expect(result).toBe(jsonBodyContent);
     });
 
-    it('should send a fetch request with the corrent params and throw an error when the response status is not ok', async (done) => {
+    it('should send a fetch request with the correct params and throw an error when the response status is not ok', async (done) => {
       (fetch as jest.Mock).mockReturnValue(Promise.resolve({ ok: false, status: 500, statusText: 'Internal Server Error' }));
 
       const httpFetchClient = new HTTPFetchClient();
@@ -171,7 +171,7 @@ describe('The HTTPFetchClient class', () => {
       expect(result).toBe(textBodyContent);
     });
 
-    it('should send a fetch request with the corrent params and throw an error when the response status is not ok', async (done) => {
+    it('should send a fetch request with the correct params and throw an error when the response status is not ok', async (done) => {
       (fetch as jest.Mock).mockReturnValue(Promise.resolve({ ok: false, status: 500, statusText: 'Internal Server Error' }));
 
       const httpFetchClient = new HTTPFetchClient();
