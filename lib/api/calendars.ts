@@ -1,9 +1,16 @@
+import convert from 'xml-js';
+import { MultiStatusResponse } from '../../types/XMLResponses';
 import { DAVClient } from '../DAVClient';
 
 const BASE_PATH = '/calendars';
+export interface CalendarData {
+  href: string;
+  etag: string;
+  ics: string;
+}
 
-export const getInbox = (client: DAVClient) => async (userId: string): Promise<string> => {
-  return client.requestText({
+export const getInbox = (client: DAVClient) => async (userId: string): Promise<CalendarData[]> => {
+  const responseText: string = await client.requestText({
     url: `${BASE_PATH}/${userId}/inbox`,
     method: 'REPORT',
     headers: {
@@ -21,4 +28,12 @@ export const getInbox = (client: DAVClient) => async (userId: string): Promise<s
             </c:filter>
           </c:calendar-query>`
   });
+
+  const response = convert.xml2js(responseText, { compact: true }) as MultiStatusResponse;
+
+  return response['d:multistatus']['d:response'].map((responseItem) => ({
+    href: responseItem['d:href']._text,
+    etag: responseItem['d:propstat']['d:prop']['d:getetag']._text,
+    ics: responseItem['d:propstat']['d:prop']['cal:calendar-data']._text
+  }));
 }
