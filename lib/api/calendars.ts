@@ -1,4 +1,4 @@
-import convert from 'xml-js';
+import { xml2js } from 'xml-js';
 import { MultiStatusResponse } from '../../types/XMLResponses';
 import { DAVClient } from '../DAVClient';
 
@@ -29,7 +29,7 @@ export const getInbox = (client: DAVClient) => async (userId: string): Promise<C
           </c:calendar-query>`
   });
 
-  const response = convert.xml2js(responseText, { compact: true }) as MultiStatusResponse;
+  const response = xml2js(responseText, { compact: true }) as MultiStatusResponse;
 
   return response['d:multistatus']['d:response'].map((responseItem) => ({
     href: responseItem['d:href']._text,
