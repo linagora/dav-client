@@ -30,6 +30,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "dav-parser": "github:linagora/dav-parser#main",
     "isomorphic-unfetch": "^3.1.0",
     "url-join": "^4.0.1",
     "xml-js": "^1.6.11"
