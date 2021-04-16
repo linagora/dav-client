@@ -5,6 +5,7 @@
   "main": "dist/index.js",
   "module": "dist/index.js",
   "type": "module",
+  "typings": "dist/lib/index.d.ts",
   "scripts": {
     "build": "rollup -c rollup.config.ts",
     "test": "jest"

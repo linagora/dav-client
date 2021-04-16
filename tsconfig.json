@@ -1,5 +1,5 @@
 {
   "extends": "@tsconfig/recommended/tsconfig.json",
-  "include": ["lib/**/*"],
+  "include": ["lib/**/*", "types/**/*"],
   "exclude": ["node_modules/*"]
 }
