@@ -2,6 +2,7 @@ import { xml2js } from 'xml-js';
 import { MultiStatusResponse } from '../../types/XMLResponses';
 import { DAVClient } from '../DAVClient';
 import { CalendarEventObject, parse } from 'dav-parser';
+import urlJoin from 'url-join';
 
 const BASE_PATH = '/calendars';
 export interface CalendarData {
@@ -13,7 +14,7 @@ export interface CalendarData {
 
 export const getInbox = (client: DAVClient) => async (userId: string): Promise<CalendarData[]> => {
   const responseText: string = await client.requestText({
-    url: `${BASE_PATH}/${userId}/inbox`,
+    url: urlJoin(BASE_PATH, userId, 'inbox'),
     method: 'REPORT',
     headers: {
       Depth: '1'
