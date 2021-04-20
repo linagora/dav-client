@@ -1,5 +1,5 @@
 import { DAVClient } from '../../lib/DAVClient';
-import { getInbox, CalendarData, modifyEvent } from '../../lib/api/calendars';
+import { getInbox, CalendarData, modifyEvent ,deleteEvent } from '../../lib/api/calendars';
 import { HTTPClient } from '../../lib/HTTPClient';
 import { response } from './const';
 import { CalendarEventObject } from 'dav-parser';
@@ -118,6 +118,38 @@ DTSTART:20210315T100000\r\n\
 DTEND:20210315T110000\r\n\
 END:VEVENT\r\n\
 END:VCALENDAR',
+      headers: {
+        Authorization: 'Basic header',
+      }
+    });
+  });
+});
+
+describe('the deleteEvent method', () => {
+  let davClient: DAVClient, httpClient: HTTPClient;
+  beforeEach(() => {
+    httpClient = {
+      request: jest.fn(),
+      requestJson: jest.fn(),
+      requestText: jest.fn(),
+    };
+
+    davClient = new DAVClient({
+      baseURL: 'http://url',
+      httpClient,
+      headers: {
+        Authorization: 'Basic header',
+      },
+    });
+  });
+
+  it('should send a DELETE request to the event path', () => {
+    const path = 'events/123456.ics';
+
+    deleteEvent(davClient)(path);
+    expect(httpClient.requestJson).toHaveBeenCalledWith({
+      url: 'http://url/calendars/events/123456.ics',
+      method: 'DELETE',
       headers: {
         Authorization: 'Basic header',
       }
