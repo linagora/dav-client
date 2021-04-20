@@ -1,9 +1,3 @@
-import { HTTPFetchClient } from './HTTPFetchClient';
-import { DAVClient } from './DAVClient';
-import { getInbox } from './api/calendars';
-
-export {
-  HTTPFetchClient,
-  DAVClient,
-  getInbox
-};
+export { HTTPFetchClient } from './HTTPFetchClient';
+export { DAVClient } from './DAVClient';
+export { getInbox, modifyEvent } from './api/calendars';

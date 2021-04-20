@@ -1,11 +1,12 @@
 import { DAVClient } from '../../lib/DAVClient';
-import { getInbox, CalendarData } from '../../lib/api/calendars';
+import { getInbox, CalendarData, modifyEvent } from '../../lib/api/calendars';
 import { HTTPClient } from '../../lib/HTTPClient';
 import { response } from './const';
+import { CalendarEventObject } from 'dav-parser';
+
+let davClient: DAVClient, httpClient: HTTPClient;
 
 describe('the getInbox method', () => {
-  let davClient: DAVClient, httpClient: HTTPClient;
-
   const requestTextMock = jest.fn();
   requestTextMock.mockResolvedValue(response);
 
@@ -66,4 +67,60 @@ describe('the getInbox method', () => {
       expect(firstResponse.events[0].extendedProps['x-openpaas-videoconference']).toEqual('http://conference');
     });
   })
+});
+
+describe('the modifyEvent method', () => {
+  beforeEach(() => {
+    httpClient = {
+      request: jest.fn(),
+      requestJson: jest.fn(),
+      requestText: jest.fn(),
+    };
+
+    davClient = new DAVClient({
+      baseURL: 'http://url',
+      httpClient,
+      headers: {
+        Authorization: 'Basic header',
+      },
+    });
+  });
+
+  it('should send a PUT request to the event path with the event object ICS as body', () => {
+    const path = 'events/123456.ics';
+    const testEventObject: CalendarEventObject = {
+      id: '123456',
+      title: 'test',
+      start: '2021-03-15T10:00:00',
+      end: '2021-03-15T11:00:00',
+      allDay: false,
+      description: 'simple description',
+      location: 'some location',
+      duration: {
+        hours: 1,
+      },
+      extendedProps: {},
+    };
+
+    modifyEvent(davClient)(path, testEventObject);
+    expect(httpClient.requestText).toHaveBeenCalledWith({
+      url: 'http://url/calendars/events/123456.ics',
+      method: 'PUT',
+      body: 'BEGIN:VCALENDAR\r\n\
+VERSION:2.0\r\n\
+CALSCALE:GREGORIAN\r\n\
+BEGIN:VEVENT\r\n\
+UID:123456\r\n\
+SUMMARY:test\r\n\
+LOCATION:some location\r\n\
+DESCRIPTION:simple description\r\n\
+DTSTART:20210315T100000\r\n\
+DTEND:20210315T110000\r\n\
+END:VEVENT\r\n\
+END:VCALENDAR',
+      headers: {
+        Authorization: 'Basic header',
+      }
+    });
+  });
 });
