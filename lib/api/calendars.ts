@@ -51,3 +51,10 @@ export const modifyEvent = (client: DAVClient) => async (eventPath: string, even
     body: translate(event)
   });
 }
+
+export const deleteEvent = (client: DAVClient) => async (eventPath: string): Promise<string> => {
+  return await client.requestJson({
+    url: urlJoin(BASE_PATH, eventPath),
+    method: 'DELETE'
+  });
+}
