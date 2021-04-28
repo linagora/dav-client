@@ -58,7 +58,7 @@ export const modifyEvent = (client: DAVClient) => async (eventPath: string, even
 };
 
 export const changeParticipation = (client: DAVClient) => async ({ eventPath, attendeeEmail, action, event }: ChangeParticipationOptions): Promise<string> => {
-  if (!Array.isArray(event.attendees)) return Promise.reject('Can not change participation');
+  if (!Array.isArray(event.attendees)) throw new Error('Can not change participation');
 
   for (const attendee of event.attendees) {
     if (attendee.email !== attendeeEmail) continue;
@@ -68,7 +68,7 @@ export const changeParticipation = (client: DAVClient) => async ({ eventPath, at
     return modifyEvent(client)(eventPath, event);
   }
 
-  return Promise.reject('No matching attendee found in the event');
+  throw new Error('No matching attendee found in the event');
 };
 
 export const deleteEvent = (client: DAVClient) => async (eventPath: string): Promise<string> => {
