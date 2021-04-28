@@ -6,7 +6,8 @@
   ],
   "extends": [
     "eslint:recommended",
-    "plugin:@typescript-eslint/recommended"
+    "plugin:@typescript-eslint/recommended",
+    "plugin:prettier/recommended"
   ],
   "env": {
     "browser": true,
@@ -15,7 +16,11 @@
     "commonjs": true
   },
   "rules": {
-    "quotes": ["error", "single"],
-    "indent": ["error", 2]
+    "prettier/prettier": ["error"],
+    "newline-before-return": ["error"],
+    "newline-after-var": ["error"],
+    "@typescript-eslint/type-annotation-spacing": ["error"],
+    "@typescript-eslint/semi": ["error"],
+    "@typescript-eslint/explicit-module-boundary-types": ["off"]
   }
 }

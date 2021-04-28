@@ -25,7 +25,7 @@ export class DAVClient {
     return {
       ...options,
       url: this.buildFullURL(options.url),
-      headers: { ...options.headers, ...this.#headers } 
+      headers: { ...options.headers, ...this.#headers },
     };
   }
 

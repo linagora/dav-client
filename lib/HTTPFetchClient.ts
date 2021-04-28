@@ -10,7 +10,7 @@ interface FetchOptions {
 export class HTTPFetchClient implements HTTPClient {
   private buildFetchOptions({ method, body, headers }: RequestOptions): FetchOptions {
     const fetchOptions: FetchOptions = {
-      method
+      method,
     };
 
     if (body) fetchOptions.body = body;

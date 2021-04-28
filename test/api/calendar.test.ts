@@ -8,6 +8,7 @@ let davClient: DAVClient, httpClient: HTTPClient;
 
 describe('the getInbox method', () => {
   const requestTextMock = jest.fn();
+
   requestTextMock.mockResolvedValue(response);
 
   beforeEach(() => {
@@ -27,21 +28,20 @@ describe('the getInbox method', () => {
   });
 
   it('should return the CalendarData for the given user id', () => {
-    getInbox(davClient)('someuserid')
-      .then((calendardata: CalendarData[]) => {
-        const [firstResponse] = calendardata;
+    getInbox(davClient)('someuserid').then((calendardata: CalendarData[]) => {
+      const [firstResponse] = calendardata;
 
-        // check if we have 2 responses like in the fake xml
-        expect(calendardata).toHaveLength(2);
-        // check the first href
-        expect(firstResponse.href).toEqual('/calendars/5fbb828496e95069fd4d5114/inbox/sabredav-8c5d0154-75e3-45de-9f6f-da47e56a181e.ics');
-        // the etag
-        expect(firstResponse.etag).toEqual('"59be6bf1e12e937dfed81c547fc61a11"');
-        // the ICS
-        expect(firstResponse.ics.substring(0, 15)).toEqual('BEGIN:VCALENDAR');
-        // check the parsed events from the ics 
-        expect(firstResponse.events).toHaveLength(1);
-      });
+      // check if we have 2 responses like in the fake xml
+      expect(calendardata).toHaveLength(2);
+      // check the first href
+      expect(firstResponse.href).toEqual('/calendars/5fbb828496e95069fd4d5114/inbox/sabredav-8c5d0154-75e3-45de-9f6f-da47e56a181e.ics');
+      // the etag
+      expect(firstResponse.etag).toEqual('"59be6bf1e12e937dfed81c547fc61a11"');
+      // the ICS
+      expect(firstResponse.ics.substring(0, 15)).toEqual('BEGIN:VCALENDAR');
+      // check the parsed events from the ics
+      expect(firstResponse.events).toHaveLength(1);
+    });
   });
 
   it('should have the parsed events from the ics within the calendarData response', () => {
@@ -66,7 +66,7 @@ describe('the getInbox method', () => {
       // check the extended properties
       expect(firstResponse.events[0].extendedProps['x-openpaas-videoconference']).toEqual('http://conference');
     });
-  })
+  });
 });
 
 describe('the modifyEvent method', () => {
@@ -106,7 +106,8 @@ describe('the modifyEvent method', () => {
     expect(httpClient.requestText).toHaveBeenCalledWith({
       url: 'http://url/calendars/events/123456.ics',
       method: 'PUT',
-      body: 'BEGIN:VCALENDAR\r\n\
+      body:
+        'BEGIN:VCALENDAR\r\n\
 VERSION:2.0\r\n\
 CALSCALE:GREGORIAN\r\n\
 BEGIN:VEVENT\r\n\
@@ -120,13 +121,14 @@ END:VEVENT\r\n\
 END:VCALENDAR',
       headers: {
         Authorization: 'Basic header',
-      }
+      },
     });
   });
 });
 
 describe('the changeParticipation method', () => {
   let davClient: DAVClient, httpClient: HTTPClient;
+
   beforeEach(() => {
     httpClient = {
       request: jest.fn(),
@@ -149,11 +151,13 @@ describe('the changeParticipation method', () => {
       title: 'test',
       start: '2021-03-15T10:00:00',
       end: '2021-03-15T11:00:00',
-      attendees: [{
-        partstat: 'noaction',
-        cn: 'cn',
-        email: 'test@gmail.com'
-      }],
+      attendees: [
+        {
+          partstat: 'noaction',
+          cn: 'cn',
+          email: 'test@gmail.com',
+        },
+      ],
       allDay: false,
       description: 'simple description',
       location: 'some location',
@@ -166,9 +170,8 @@ describe('the changeParticipation method', () => {
       eventPath: 'events/123456.ics',
       attendeeEmail: 'test@gmail.com',
       action: 'accept',
-      event: testEventObject
-
-    }
+      event: testEventObject,
+    };
 
     changeParticipation(davClient)(testChangeParticipationObject);
     expect(modifyEvent).toHaveBeenCalled;
@@ -177,11 +180,13 @@ describe('the changeParticipation method', () => {
       title: 'test',
       start: '2021-03-15T10:00:00',
       end: '2021-03-15T11:00:00',
-      attendees: [{
-        partstat: 'accept',
-        cn: 'cn',
-        email: 'test@gmail.com'
-      }],
+      attendees: [
+        {
+          partstat: 'accept',
+          cn: 'cn',
+          email: 'test@gmail.com',
+        },
+      ],
       allDay: false,
       description: 'simple description',
       location: 'some location',
@@ -211,11 +216,11 @@ describe('the changeParticipation method', () => {
       eventPath: 'events/123456.ics',
       attendeeEmail: 'test1@gmail.com',
       action: 'accept',
-      event: testEventObject
-    }
+      event: testEventObject,
+    };
 
     changeParticipation(davClient)(testChangeParticipationObject);
-    expect(changeParticipation(davClient)(testChangeParticipationObject)).rejects.toEqual('Can not change participation')
+    expect(changeParticipation(davClient)(testChangeParticipationObject)).rejects.toEqual('Can not change participation');
   });
 
   it('should reject if the attendee does not exist in the event', () => {
@@ -225,11 +230,13 @@ describe('the changeParticipation method', () => {
       start: '2021-03-15T10:00:00',
       end: '2021-03-15T11:00:00',
       allDay: false,
-      attendees: [{
-        partstat: 'accept',
-        cn: 'cn',
-        email: 'test@gmail.com'
-      }],
+      attendees: [
+        {
+          partstat: 'accept',
+          cn: 'cn',
+          email: 'test@gmail.com',
+        },
+      ],
       description: 'simple description',
       location: 'some location',
       duration: {
@@ -242,13 +249,13 @@ describe('the changeParticipation method', () => {
       eventPath: 'events/123456.ics',
       attendeeEmail: 'anotherUser@gmail.com',
       action: 'accept',
-      event: testEventObject
-    }
+      event: testEventObject,
+    };
 
     changeParticipation(davClient)(testChangeParticipationObject);
-    expect(changeParticipation(davClient)(testChangeParticipationObject)).rejects.toEqual('No matching attendee found in the event')
+    expect(changeParticipation(davClient)(testChangeParticipationObject)).rejects.toEqual('No matching attendee found in the event');
   });
-})
+});
 
 describe('the deleteEvent method', () => {
   it('should send a DELETE request to the event path', () => {
@@ -260,7 +267,7 @@ describe('the deleteEvent method', () => {
       method: 'DELETE',
       headers: {
         Authorization: 'Basic header',
-      }
+      },
     });
   });
 });
