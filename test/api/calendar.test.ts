@@ -1,5 +1,5 @@
 import { DAVClient } from '../../lib/DAVClient';
-import { getInbox, CalendarData, modifyEvent ,deleteEvent } from '../../lib/api/calendars';
+import { getInbox, CalendarData, modifyEvent, changeParticipation, deleteEvent, ChangeParticipationOptions } from '../../lib/api/calendars';
 import { HTTPClient } from '../../lib/HTTPClient';
 import { response } from './const';
 import { CalendarEventObject } from 'dav-parser';
@@ -55,7 +55,7 @@ describe('the getInbox method', () => {
       expect(firstResponse.events[0].start).toEqual('2020-11-27T14:00:00Z');
       expect(firstResponse.events[0].end).toEqual('2020-11-27T14:30:00Z');
       // check the duration
-      expect(firstResponse.events[0].duration).toMatchObject({ minutes: 30});
+      expect(firstResponse.events[0].duration).toMatchObject({ minutes: 30 });
       // check the attendess
       expect(firstResponse.events[0]?.attendees).toHaveLength(3);
       // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
@@ -125,7 +125,7 @@ END:VCALENDAR',
   });
 });
 
-describe('the deleteEvent method', () => {
+describe('the changeParticipation method', () => {
   let davClient: DAVClient, httpClient: HTTPClient;
   beforeEach(() => {
     httpClient = {
@@ -143,6 +143,114 @@ describe('the deleteEvent method', () => {
     });
   });
 
+  it('should update parstat in event', () => {
+    const testEventObject: CalendarEventObject = {
+      id: '123456',
+      title: 'test',
+      start: '2021-03-15T10:00:00',
+      end: '2021-03-15T11:00:00',
+      attendees: [{
+        partstat: 'noaction',
+        cn: 'cn',
+        email: 'test@gmail.com'
+      }],
+      allDay: false,
+      description: 'simple description',
+      location: 'some location',
+      duration: {
+        hours: 1,
+      },
+      extendedProps: {},
+    };
+    const testChangeParticipationObject: ChangeParticipationOptions = {
+      eventPath: 'events/123456.ics',
+      attendeeEmail: 'test@gmail.com',
+      action: 'accept',
+      event: testEventObject
+
+    }
+
+    changeParticipation(davClient)(testChangeParticipationObject);
+    expect(modifyEvent).toHaveBeenCalled;
+    expect(testEventObject).toStrictEqual({
+      id: '123456',
+      title: 'test',
+      start: '2021-03-15T10:00:00',
+      end: '2021-03-15T11:00:00',
+      attendees: [{
+        partstat: 'accept',
+        cn: 'cn',
+        email: 'test@gmail.com'
+      }],
+      allDay: false,
+      description: 'simple description',
+      location: 'some location',
+      duration: {
+        hours: 1,
+      },
+      extendedProps: {},
+    });
+  });
+
+  it('should return error message if event does not containt attendee', () => {
+    const testEventObject: CalendarEventObject = {
+      id: '123456',
+      title: 'test',
+      start: '2021-03-15T10:00:00',
+      end: '2021-03-15T11:00:00',
+      allDay: false,
+      description: 'simple description',
+      location: 'some location',
+      duration: {
+        hours: 1,
+      },
+      extendedProps: {},
+    };
+
+    const testChangeParticipationObject: ChangeParticipationOptions = {
+      eventPath: 'events/123456.ics',
+      attendeeEmail: 'test1@gmail.com',
+      action: 'accept',
+      event: testEventObject
+    }
+
+    changeParticipation(davClient)(testChangeParticipationObject);
+    expect(changeParticipation(davClient)(testChangeParticipationObject)).rejects.toEqual('Can not change participation')
+  });
+
+  it('should reject if the attendee does not exist in the event', () => {
+    const testEventObject: CalendarEventObject = {
+      id: '123456',
+      title: 'test',
+      start: '2021-03-15T10:00:00',
+      end: '2021-03-15T11:00:00',
+      allDay: false,
+      attendees: [{
+        partstat: 'accept',
+        cn: 'cn',
+        email: 'test@gmail.com'
+      }],
+      description: 'simple description',
+      location: 'some location',
+      duration: {
+        hours: 1,
+      },
+      extendedProps: {},
+    };
+
+    const testChangeParticipationObject: ChangeParticipationOptions = {
+      eventPath: 'events/123456.ics',
+      attendeeEmail: 'anotherUser@gmail.com',
+      action: 'accept',
+      event: testEventObject
+    }
+
+    changeParticipation(davClient)(testChangeParticipationObject);
+    expect(changeParticipation(davClient)(testChangeParticipationObject)).rejects.toEqual('No matching attendee found in the event')
+  });
+})
+
+describe('the deleteEvent method', () => {
   it('should send a DELETE request to the event path', () => {
     const path = 'events/123456.ics';
 
