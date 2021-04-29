@@ -31,29 +31,50 @@ describe('The HTTPFetchClient class', () => {
 
     it('should send a fetch request with the correct params with headers but without body', async () => {
       const httpFetchClient = new HTTPFetchClient();
-      const requestOptions: RequestOptions = { url: 'http://url.com', method: 'GET', headers: { Authorization: 'Bearer whatever' } };
+      const requestOptions: RequestOptions = {
+        url: 'http://url.com',
+        method: 'GET',
+        headers: { Authorization: 'Bearer whatever' },
+      };
 
       await httpFetchClient.request(requestOptions);
 
       expect(fetch).toHaveBeenCalledTimes(1);
-      expect(fetch).toHaveBeenCalledWith(requestOptions.url, { method: requestOptions.method, headers: requestOptions.headers });
+      expect(fetch).toHaveBeenCalledWith(requestOptions.url, {
+        method: requestOptions.method,
+        headers: requestOptions.headers,
+      });
     });
 
     it('should send a fetch request with the correct params with headers and body', async () => {
       const httpFetchClient = new HTTPFetchClient();
-      const requestOptions: RequestOptions = { url: 'http://url.com', method: 'POST', headers: { Authorization: 'Bearer whatever' }, body: '{"a":1}' };
+      const requestOptions: RequestOptions = {
+        url: 'http://url.com',
+        method: 'POST',
+        headers: { Authorization: 'Bearer whatever' },
+        body: '{"a":1}',
+      };
 
       await httpFetchClient.request(requestOptions);
 
       expect(fetch).toHaveBeenCalledTimes(1);
-      expect(fetch).toHaveBeenCalledWith(requestOptions.url, { method: requestOptions.method, headers: requestOptions.headers, body: requestOptions.body });
+      expect(fetch).toHaveBeenCalledWith(requestOptions.url, {
+        method: requestOptions.method,
+        headers: requestOptions.headers,
+        body: requestOptions.body,
+      });
     });
 
     it('should send a fetch request with the correct params and throw an error when the response status is not ok', async (done) => {
       (fetch as jest.Mock).mockReturnValue(Promise.resolve({ ok: false, status: 500, statusText: 'Internal Server Error' }));
 
       const httpFetchClient = new HTTPFetchClient();
-      const requestOptions: RequestOptions = { url: 'http://url.com', method: 'POST', headers: { Authorization: 'Bearer whatever' }, body: '{"a":1}' };
+      const requestOptions: RequestOptions = {
+        url: 'http://url.com',
+        method: 'POST',
+        headers: { Authorization: 'Bearer whatever' },
+        body: '{"a":1}',
+      };
 
       try {
         await httpFetchClient.request(requestOptions);
@@ -62,7 +83,11 @@ describe('The HTTPFetchClient class', () => {
       } catch (err) {
         expect(err.message).toBe('500 Internal Server Error');
         expect(fetch).toHaveBeenCalledTimes(1);
-        expect(fetch).toHaveBeenCalledWith(requestOptions.url, { method: requestOptions.method, headers: requestOptions.headers, body: requestOptions.body });
+        expect(fetch).toHaveBeenCalledWith(requestOptions.url, {
+          method: requestOptions.method,
+          headers: requestOptions.headers,
+          body: requestOptions.body,
+        });
         done();
       }
     });
@@ -76,7 +101,7 @@ describe('The HTTPFetchClient class', () => {
 
       fetchMockReturnValue.json = () => Promise.resolve(jsonBodyContent);
     });
-    
+
     it('should send a fetch request with the correct params without headers and body and return json content', async () => {
       const httpFetchClient = new HTTPFetchClient();
       const requestOptions: RequestOptions = { url: 'http://url.com', method: 'GET' };
@@ -90,23 +115,39 @@ describe('The HTTPFetchClient class', () => {
 
     it('should send a fetch request with the correct params with headers but without body and return json content', async () => {
       const httpFetchClient = new HTTPFetchClient();
-      const requestOptions: RequestOptions = { url: 'http://url.com', method: 'GET', headers: { Authorization: 'Bearer whatever' } };
+      const requestOptions: RequestOptions = {
+        url: 'http://url.com',
+        method: 'GET',
+        headers: { Authorization: 'Bearer whatever' },
+      };
 
       const result = await httpFetchClient.requestJson(requestOptions);
 
       expect(fetch).toHaveBeenCalledTimes(1);
-      expect(fetch).toHaveBeenCalledWith(requestOptions.url, { method: requestOptions.method, headers: requestOptions.headers });
+      expect(fetch).toHaveBeenCalledWith(requestOptions.url, {
+        method: requestOptions.method,
+        headers: requestOptions.headers,
+      });
       expect(result).toBe(jsonBodyContent);
     });
 
     it('should send a fetch request with the correct params with headers and body and return json content', async () => {
       const httpFetchClient = new HTTPFetchClient();
-      const requestOptions: RequestOptions = { url: 'http://url.com', method: 'POST', headers: { Authorization: 'Bearer whatever' }, body: '{"a":1}' };
+      const requestOptions: RequestOptions = {
+        url: 'http://url.com',
+        method: 'POST',
+        headers: { Authorization: 'Bearer whatever' },
+        body: '{"a":1}',
+      };
 
       const result = await httpFetchClient.requestJson(requestOptions);
 
       expect(fetch).toHaveBeenCalledTimes(1);
-      expect(fetch).toHaveBeenCalledWith(requestOptions.url, { method: requestOptions.method, headers: requestOptions.headers, body: requestOptions.body });
+      expect(fetch).toHaveBeenCalledWith(requestOptions.url, {
+        method: requestOptions.method,
+        headers: requestOptions.headers,
+        body: requestOptions.body,
+      });
       expect(result).toBe(jsonBodyContent);
     });
 
@@ -114,7 +155,12 @@ describe('The HTTPFetchClient class', () => {
       (fetch as jest.Mock).mockReturnValue(Promise.resolve({ ok: false, status: 500, statusText: 'Internal Server Error' }));
 
       const httpFetchClient = new HTTPFetchClient();
-      const requestOptions: RequestOptions = { url: 'http://url.com', method: 'POST', headers: { Authorization: 'Bearer whatever' }, body: '{"a":1}' };
+      const requestOptions: RequestOptions = {
+        url: 'http://url.com',
+        method: 'POST',
+        headers: { Authorization: 'Bearer whatever' },
+        body: '{"a":1}',
+      };
 
       try {
         await httpFetchClient.requestJson(requestOptions);
@@ -123,7 +169,11 @@ describe('The HTTPFetchClient class', () => {
       } catch (err) {
         expect(err.message).toBe('500 Internal Server Error');
         expect(fetch).toHaveBeenCalledTimes(1);
-        expect(fetch).toHaveBeenCalledWith(requestOptions.url, { method: requestOptions.method, headers: requestOptions.headers, body: requestOptions.body });
+        expect(fetch).toHaveBeenCalledWith(requestOptions.url, {
+          method: requestOptions.method,
+          headers: requestOptions.headers,
+          body: requestOptions.body,
+        });
         done();
       }
     });
@@ -137,7 +187,7 @@ describe('The HTTPFetchClient class', () => {
 
       fetchMockReturnValue.text = () => Promise.resolve(textBodyContent);
     });
-    
+
     it('should send a fetch request with the correct params without headers and body and return text content', async () => {
       const httpFetchClient = new HTTPFetchClient();
       const requestOptions: RequestOptions = { url: 'http://url.com', method: 'GET' };
@@ -151,23 +201,39 @@ describe('The HTTPFetchClient class', () => {
 
     it('should send a fetch request with the correct params with headers but without body and return text content', async () => {
       const httpFetchClient = new HTTPFetchClient();
-      const requestOptions: RequestOptions = { url: 'http://url.com', method: 'GET', headers: { Authorization: 'Bearer whatever' } };
+      const requestOptions: RequestOptions = {
+        url: 'http://url.com',
+        method: 'GET',
+        headers: { Authorization: 'Bearer whatever' },
+      };
 
       const result = await httpFetchClient.requestText(requestOptions);
 
       expect(fetch).toHaveBeenCalledTimes(1);
-      expect(fetch).toHaveBeenCalledWith(requestOptions.url, { method: requestOptions.method, headers: requestOptions.headers });
+      expect(fetch).toHaveBeenCalledWith(requestOptions.url, {
+        method: requestOptions.method,
+        headers: requestOptions.headers,
+      });
       expect(result).toBe(textBodyContent);
     });
 
     it('should send a fetch request with the correct params with headers and body and return text content', async () => {
       const httpFetchClient = new HTTPFetchClient();
-      const requestOptions: RequestOptions = { url: 'http://url.com', method: 'POST', headers: { Authorization: 'Bearer whatever' }, body: '{"a":1}' };
+      const requestOptions: RequestOptions = {
+        url: 'http://url.com',
+        method: 'POST',
+        headers: { Authorization: 'Bearer whatever' },
+        body: '{"a":1}',
+      };
 
       const result = await httpFetchClient.requestText(requestOptions);
 
       expect(fetch).toHaveBeenCalledTimes(1);
-      expect(fetch).toHaveBeenCalledWith(requestOptions.url, { method: requestOptions.method, headers: requestOptions.headers, body: requestOptions.body });
+      expect(fetch).toHaveBeenCalledWith(requestOptions.url, {
+        method: requestOptions.method,
+        headers: requestOptions.headers,
+        body: requestOptions.body,
+      });
       expect(result).toBe(textBodyContent);
     });
 
@@ -175,7 +241,12 @@ describe('The HTTPFetchClient class', () => {
       (fetch as jest.Mock).mockReturnValue(Promise.resolve({ ok: false, status: 500, statusText: 'Internal Server Error' }));
 
       const httpFetchClient = new HTTPFetchClient();
-      const requestOptions: RequestOptions = { url: 'http://url.com', method: 'POST', headers: { Authorization: 'Bearer whatever' }, body: '{"a":1}' };
+      const requestOptions: RequestOptions = {
+        url: 'http://url.com',
+        method: 'POST',
+        headers: { Authorization: 'Bearer whatever' },
+        body: '{"a":1}',
+      };
 
       try {
         await httpFetchClient.requestText(requestOptions);
@@ -184,7 +255,11 @@ describe('The HTTPFetchClient class', () => {
       } catch (err) {
         expect(err.message).toBe('500 Internal Server Error');
         expect(fetch).toHaveBeenCalledTimes(1);
-        expect(fetch).toHaveBeenCalledWith(requestOptions.url, { method: requestOptions.method, headers: requestOptions.headers, body: requestOptions.body });
+        expect(fetch).toHaveBeenCalledWith(requestOptions.url, {
+          method: requestOptions.method,
+          headers: requestOptions.headers,
+          body: requestOptions.body,
+        });
         done();
       }
     });

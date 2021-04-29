@@ -10,7 +10,7 @@ export default {
   output: {
     file: pkg.main,
     format: 'es',
-    sourcemap: true
+    sourcemap: true,
   },
   plugins: [
     resolve(),
@@ -18,8 +18,8 @@ export default {
     typescript({
       declaration: true,
       declarationDir: '.',
-      tsconfig: './tsconfig.json'
+      tsconfig: './tsconfig.json',
     }),
-    terser()
-  ]
+    terser(),
+  ],
 };
