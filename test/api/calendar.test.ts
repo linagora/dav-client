@@ -1,8 +1,8 @@
 import { DAVClient } from '../../lib/DAVClient';
-import { getInbox, CalendarData, modifyEvent, changeParticipation, deleteEvent, ChangeParticipationOptions } from '../../lib/api/calendars';
+import { getInbox, CalendarData, modifyEvent, changeParticipation, deleteEvent, ChangeParticipationOptions, listFreeBusy } from '../../lib/api/calendars';
 import { HTTPClient } from '../../lib/HTTPClient';
-import { response } from './const';
-import { CalendarEventObject } from 'dav-parser';
+import { freeBusyResponse, response } from './const';
+import { CalendarEventObject, FreeBusy } from 'dav-parser';
 
 let davClient: DAVClient, httpClient: HTTPClient;
 
@@ -272,6 +272,60 @@ describe('the deleteEvent method', () => {
       method: 'DELETE',
       headers: {
         Authorization: 'Basic header',
+      },
+    });
+  });
+});
+
+describe('the listFreeBusy method', () => {
+  const requestTextMock = jest.fn();
+
+  requestTextMock.mockResolvedValue(freeBusyResponse);
+
+  beforeEach(() => {
+    httpClient = {
+      request: jest.fn(),
+      requestJson: jest.fn(),
+      requestText: requestTextMock,
+    };
+
+    davClient = new DAVClient({
+      baseURL: 'http://url',
+      httpClient,
+      headers: {
+        Authorization: 'Basic header',
+      },
+    });
+  });
+
+  it('should make a free-busy REPORT request to the user calendar', async () => {
+    await listFreeBusy(davClient)('123456', '20210429T000000Z', '20210430T220000Z');
+
+    expect(requestTextMock).toBeCalledWith({
+      url: 'http://url/calendars/123456/events.json',
+      method: 'REPORT',
+      body: `<?xml version="1.0" encoding="utf-8" ?>
+<C:free-busy-query xmlns:C="urn:ietf:params:xml:ns:caldav">
+  <C:time-range start="20210429T000000Z" end="20210430T220000Z"/>
+</C:free-busy-query>`,
+      headers: {
+        Authorization: 'Basic header',
+      },
+    });
+  });
+
+  it('should return a list of freeBusy objects', async () => {
+    const freeBusyObjects: FreeBusy[] = await listFreeBusy(davClient)('123456', '20210429T000000Z', '20210430T220000Z');
+    const [freeBusy] = freeBusyObjects;
+
+    expect(freeBusyObjects).toHaveLength(1);
+    expect(freeBusy).toMatchObject({
+      start: new Date('2021-04-29T00:00:00.000Z'),
+      end: new Date('2021-04-30T22:00:00.000Z'),
+      timestamp: new Date('2021-04-29T13:18:22.000Z'),
+      freeBusy: {
+        start: new Date('2021-04-29T00:00:00.000Z'),
+        end: new Date('2021-04-30T22:00:00.000Z'),
       },
     });
   });

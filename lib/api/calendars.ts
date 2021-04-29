@@ -1,7 +1,7 @@
 import { xml2js } from 'xml-js';
 import { MultiStatusResponse } from '../../types/XMLResponses';
 import { DAVClient } from '../DAVClient';
-import { CalendarEventObject, parse, translate } from 'dav-parser';
+import { CalendarEventObject, parse, translate, parseFreeBusy, FreeBusy } from 'dav-parser';
 import urlJoin from 'url-join';
 
 const BASE_PATH = '/calendars';
@@ -76,4 +76,17 @@ export const deleteEvent = (client: DAVClient) => async (eventPath: string): Pro
     url: urlJoin(BASE_PATH, eventPath),
     method: 'DELETE',
   });
+};
+
+export const listFreeBusy = (client: DAVClient) => async (userId: string, start: string, end: string): Promise<FreeBusy[]> => {
+  const response: string = await client.requestText({
+    url: urlJoin(BASE_PATH, userId, 'events.json'),
+    method: 'REPORT',
+    body: `<?xml version="1.0" encoding="utf-8" ?>
+<C:free-busy-query xmlns:C="urn:ietf:params:xml:ns:caldav">
+  <C:time-range start="${start}" end="${end}"/>
+</C:free-busy-query>`,
+  });
+
+  return parseFreeBusy(response);
 };
