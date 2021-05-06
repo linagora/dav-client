@@ -30,6 +30,16 @@ describe('The DAVClient class', () => {
         headers: { Authorization: 'Bearer token', Depth: '1' },
       });
     });
+
+    it('should override header options correctly', () => {
+      const requestOptions: RequestOptions = { url: '/api/test', method: 'GET', headers: { Depth: '1', Authorization: 'Basic' } };
+      const davClient = new DAVClient({ baseURL: 'http://url.com/', httpClient, headers: { Authorization: 'Bearer token' } });
+
+      davClient.requestJson(requestOptions);
+
+      expect(httpClient.requestJson).toHaveBeenCalledTimes(1);
+      expect(httpClient.requestJson).toHaveBeenCalledWith({ url: 'http://url.com/api/test', method: 'GET', headers: { Authorization: 'Basic', Depth: '1' } });
+    });
   });
 
   describe('The requestText method', () => {
@@ -49,6 +59,16 @@ describe('The DAVClient class', () => {
         method: 'GET',
         headers: { Authorization: 'Bearer token', Depth: '1' },
       });
+    });
+
+    it('should override header options correctly', () => {
+      const requestOptions: RequestOptions = { url: '/api/test', method: 'GET', headers: { Depth: '1', Authorization: 'Basic' } };
+      const davClient = new DAVClient({ baseURL: 'http://url.com/', httpClient, headers: { Authorization: 'Bearer token' } });
+
+      davClient.requestText(requestOptions);
+
+      expect(httpClient.requestText).toHaveBeenCalledTimes(1);
+      expect(httpClient.requestText).toHaveBeenCalledWith({ url: 'http://url.com/api/test', method: 'GET', headers: { Authorization: 'Basic', Depth: '1' } });
     });
   });
 });
