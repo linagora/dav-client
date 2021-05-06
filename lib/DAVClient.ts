@@ -33,6 +33,10 @@ export class DAVClient {
     return urlJoin(this.#baseURL, url);
   }
 
+  public changeBaseURL(newBaseURL: string): void {
+    this.#baseURL = newBaseURL;
+  }
+
   public requestJson<T>(options: RequestOptions): Promise<T> {
     return this.#httpClient.requestJson<T>(this.buildRequestOptions(options));
   }

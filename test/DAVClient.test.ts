@@ -1,3 +1,4 @@
+import urlJoin from 'url-join';
 import { DAVClient } from '../lib/DAVClient';
 import { HTTPClient, RequestOptions } from '../lib/HTTPClient';
 
@@ -10,6 +11,26 @@ describe('The DAVClient class', () => {
       requestJson: jest.fn(),
       requestText: jest.fn(),
     };
+  });
+
+  describe('The changeBaseURL method', () => {
+    it('should change the base URL correctly', async () => {
+      const davClient = new DAVClient({ baseURL: 'http://url.com/', httpClient, headers: { Authorization: 'Bearer token' } });
+      const newBaseURL = 'http://new-base-url.com/';
+
+      davClient.changeBaseURL(newBaseURL);
+
+      const requestOptions: RequestOptions = { url: '/api/test', method: 'GET', headers: { Depth: '1' } };
+
+      await davClient.requestJson(requestOptions);
+
+      expect(httpClient.requestJson).toHaveBeenCalledTimes(1);
+      expect(httpClient.requestJson).toHaveBeenCalledWith({
+        url: urlJoin(newBaseURL, requestOptions.url),
+        method: 'GET',
+        headers: { Authorization: 'Bearer token', Depth: '1' },
+      });
+    });
   });
 
   describe('The requestJson method', () => {
