@@ -33,6 +33,26 @@ describe('The DAVClient class', () => {
     });
   });
 
+  describe('The attachHeaders method', () => {
+    it('should attach headers correctly', async () => {
+      const davClient = new DAVClient({ baseURL: 'http://url.com/', httpClient, headers: { Authorization: 'Bearer token' } });
+      const headers = { Authorization: 'Basic', 'Cache-Control': 'no-cache' };
+
+      davClient.attachHeaders(headers);
+
+      const requestOptions: RequestOptions = { url: '/api/test', method: 'GET', headers: { Depth: '1' } };
+
+      await davClient.requestJson(requestOptions);
+
+      expect(httpClient.requestJson).toHaveBeenCalledTimes(1);
+      expect(httpClient.requestJson).toHaveBeenCalledWith({
+        url: 'http://url.com/api/test',
+        method: 'GET',
+        headers: { Authorization: 'Basic', Depth: '1', 'Cache-Control': 'no-cache' },
+      });
+    });
+  });
+
   describe('The requestJson method', () => {
     it('should send a request using the requestJson method of the http client with correct params', async () => {
       const requestOptions: RequestOptions = { url: '/api/test', method: 'GET', headers: { Depth: '1' } };

@@ -37,6 +37,10 @@ export class DAVClient {
     this.#baseURL = newBaseURL;
   }
 
+  public attachHeaders(headers: HeadersInit = {}): void {
+    this.#headers = { ...this.#headers, ...headers };
+  }
+
   public requestJson<T>(options: RequestOptions): Promise<T> {
     return this.#httpClient.requestJson<T>(this.buildRequestOptions(options));
   }
