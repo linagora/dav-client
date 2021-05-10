@@ -25,12 +25,20 @@ export class DAVClient {
     return {
       ...options,
       url: this.buildFullURL(options.url),
-      headers: { ...options.headers, ...this.#headers },
+      headers: { ...this.#headers, ...options.headers },
     };
   }
 
   private buildFullURL(url: string) {
     return urlJoin(this.#baseURL, url);
+  }
+
+  public changeBaseURL(newBaseURL: string): void {
+    this.#baseURL = newBaseURL;
+  }
+
+  public attachHeaders(headers: HeadersInit = {}): void {
+    this.#headers = { ...this.#headers, ...headers };
   }
 
   public requestJson<T>(options: RequestOptions): Promise<T> {
