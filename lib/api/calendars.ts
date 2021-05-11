@@ -1,8 +1,8 @@
 import { xml2js } from 'xml-js';
+import urlJoin from 'url-join';
+import { CalendarEventObject, parse, translate, parseFreeBusy, FreeBusy } from 'dav-parser';
 import { MultiStatusResponse } from '../../types/XMLResponses';
 import { DAVClient } from '../DAVClient';
-import { CalendarEventObject, parse, translate, parseFreeBusy, FreeBusy } from 'dav-parser';
-import urlJoin from 'url-join';
 
 const BASE_PATH = '/calendars';
 

@@ -1,8 +1,8 @@
-import { DAVClient } from '../../lib/DAVClient';
+import { CalendarEventObject, FreeBusy } from 'dav-parser';
 import { getInbox, CalendarData, modifyEvent, changeParticipation, deleteEvent, ChangeParticipationOptions, listFreeBusy } from '../../lib/api/calendars';
+import { DAVClient } from '../../lib/DAVClient';
 import { HTTPClient } from '../../lib/HTTPClient';
 import { freeBusyResponse, response } from './const';
-import { CalendarEventObject, FreeBusy } from 'dav-parser';
 
 let davClient: DAVClient, httpClient: HTTPClient;
 
