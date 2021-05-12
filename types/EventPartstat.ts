@@ -1,0 +1,6 @@
+export enum Partstat {
+  ACCEPTED = 'ACCEPTED',
+  DECLINED = 'DECLINED',
+  TENTATIVE = 'TENTATIVE',
+  NEEDS_ACTION = 'NEEDS-ACTION',
+}

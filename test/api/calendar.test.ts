@@ -1,8 +1,9 @@
-import { DAVClient } from '../../lib/DAVClient';
-import { getInbox, CalendarData, modifyEvent, changeParticipation, deleteEvent, ChangeParticipationOptions, listFreeBusy } from '../../lib/api/calendars';
-import { HTTPClient } from '../../lib/HTTPClient';
-import { freeBusyResponse, response } from './const';
 import { CalendarEventObject, FreeBusy } from 'dav-parser';
+import { getInbox, CalendarData, modifyEvent, changeParticipation, deleteEvent, ChangeParticipationOptions, listFreeBusy } from '../../lib/api/calendars';
+import { DAVClient } from '../../lib/DAVClient';
+import { HTTPClient } from '../../lib/HTTPClient';
+import { Partstat } from '../../types/EventPartstat';
+import { freeBusyResponse, response } from './const';
 
 let davClient: DAVClient, httpClient: HTTPClient;
 
@@ -50,7 +51,7 @@ describe('the getInbox method', () => {
     expect(firstResponse.events[0].duration).toMatchObject({ minutes: 30 });
     expect(firstResponse.events[0]?.attendees).toHaveLength(3);
     expect(firstResponse.events[0].attendees[0]).toMatchObject({
-      partstat: 'NEEDS-ACTION',
+      partstat: Partstat.NEEDS_ACTION,
       email: 'mailto:user3@open-paas.org',
     });
     expect(firstResponse.events[0].extendedProps['x-openpaas-videoconference']).toEqual('http://conference');
@@ -95,8 +96,7 @@ describe('the modifyEvent method', () => {
     expect(httpClient.requestText).toHaveBeenCalledWith({
       url: 'http://url/calendars/events/123456.ics',
       method: 'PUT',
-      body:
-        'BEGIN:VCALENDAR\r\n\
+      body: 'BEGIN:VCALENDAR\r\n\
 VERSION:2.0\r\n\
 CALSCALE:GREGORIAN\r\n\
 BEGIN:VEVENT\r\n\
@@ -158,7 +158,7 @@ describe('the changeParticipation method', () => {
     const testChangeParticipationObject: ChangeParticipationOptions = {
       eventPath: 'events/123456.ics',
       attendeeEmail: 'test@gmail.com',
-      action: 'accept',
+      partstat: Partstat.ACCEPTED,
       event: testEventObject,
     };
 
@@ -172,7 +172,7 @@ describe('the changeParticipation method', () => {
       end: '2021-03-15T11:00:00',
       attendees: [
         {
-          partstat: 'accept',
+          partstat: Partstat.ACCEPTED,
           cn: 'cn',
           email: 'test@gmail.com',
         },
@@ -205,7 +205,7 @@ describe('the changeParticipation method', () => {
     const testChangeParticipationObject: ChangeParticipationOptions = {
       eventPath: 'events/123456.ics',
       attendeeEmail: 'test1@gmail.com',
-      action: 'accept',
+      partstat: Partstat.ACCEPTED,
       event: testEventObject,
     };
 
@@ -229,7 +229,7 @@ describe('the changeParticipation method', () => {
       allDay: false,
       attendees: [
         {
-          partstat: 'accept',
+          partstat: Partstat.ACCEPTED,
           cn: 'cn',
           email: 'test@gmail.com',
         },
@@ -245,7 +245,7 @@ describe('the changeParticipation method', () => {
     const testChangeParticipationObject: ChangeParticipationOptions = {
       eventPath: 'events/123456.ics',
       attendeeEmail: 'anotherUser@gmail.com',
-      action: 'accept',
+      partstat: Partstat.ACCEPTED,
       event: testEventObject,
     };
 
