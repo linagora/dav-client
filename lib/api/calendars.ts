@@ -5,7 +5,7 @@ import { MultiStatusResponse } from '../../types/XMLResponses';
 import { DAVClient } from '../DAVClient';
 import { Partstat } from '../../types/EventPartstat';
 
-const BASE_PATH = '/calendars';
+export const BASE_PATH = '/calendars';
 
 export interface CalendarData {
   href: string;
@@ -82,7 +82,7 @@ export const changeParticipation =
 export const deleteEvent =
   (client: DAVClient) =>
   async (eventPath: string): Promise<string> => {
-    return await client.requestJson({
+    return await client.requestText({
       url: urlJoin(BASE_PATH, eventPath),
       method: 'DELETE',
     });

@@ -267,7 +267,7 @@ describe('the deleteEvent method', () => {
 
     await deleteEvent(davClient)(path);
 
-    expect(httpClient.requestJson).toHaveBeenCalledWith({
+    expect(httpClient.requestText).toHaveBeenCalledWith({
       url: 'http://url/calendars/events/123456.ics',
       method: 'DELETE',
       headers: {
