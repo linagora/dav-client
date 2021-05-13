@@ -5,7 +5,7 @@ import { MultiStatusResponse } from '../../types/XMLResponses';
 import { DAVClient } from '../DAVClient';
 import { Partstat } from '../../types/EventPartstat';
 
-const BASE_PATH = '/calendars';
+export const BASE_PATH = '/calendars';
 
 export interface CalendarData {
   href: string;
