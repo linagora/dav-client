@@ -82,7 +82,7 @@ export const changeParticipation =
 export const deleteEvent =
   (client: DAVClient) =>
   async (eventPath: string): Promise<string> => {
-    return await client.requestJson({
+    return await client.requestText({
       url: urlJoin(BASE_PATH, eventPath),
       method: 'DELETE',
     });
